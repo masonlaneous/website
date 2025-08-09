@@ -26,7 +26,7 @@ async function addPost(content: string) {
 
 const thoughts = ref<FlowThought[]>([])
 const formInput = ref('testing!')
-const adminKey = ref<string | null>(null)
+const adminKey = ref<string | null>('jufus')
 const likedList = ref<number[]>([])
 
 const initLikedList = () => {

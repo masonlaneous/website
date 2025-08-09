@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
+  const id = Number(getRouterParam(event, 'id'))
+  if (!id || isNaN(id)) return undefined
 
-  console.log(id)
-  return getThought(1)
+  return getThought(id)
 })

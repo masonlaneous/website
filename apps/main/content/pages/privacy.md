@@ -2,7 +2,7 @@
 title: Privacy Policy
 description: Privacy policy for masonscape.com
 published: 1747788022796
-modified: 1749841042873
+modified: 1754769287501
 ---
 
 This website does not collect personal data for the purpose of tracking or identifying users.
@@ -25,7 +25,8 @@ This includes:
 - What color theme you have set the website to, via the theme switching button in the top right
 - Information about the [Nyanvas](https://masonscape.com/nyanvas) page such as your current list of active images (including images you have added yourself)
 - The username and color you set in the [chat page](https://masonscape.com/chat)
-- Information for the [Dynamax Adventure Shiny Tracker](https://masonscape.com/tools/da-shiny) such as the Pokemon currently being hunted and the attempt history.
+- Information for the [Dynamax Adventure Shiny Tracker](https://masonscape.com/tools/da-shiny) such as the Pokemon currently being hunted and the attempt history
+- Your like history for the [flow](https://masonscape.com/flow) page
 
 This data generally stays on your device only, and is not processed by the server unless it happens to overlap with the following section (e.g. the chat username).
 

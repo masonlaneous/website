@@ -61,6 +61,10 @@ async function unlikePost() {
     body: { postId: props.postId }
   })
 }
+
+onMounted(() => {
+  console.log('the like button was passed an initial liked value of:', props.liked)
+})
 </script>
 
 <style>

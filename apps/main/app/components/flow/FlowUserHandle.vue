@@ -26,5 +26,6 @@ defineProps<{
 
 .name {
   margin: auto 0 auto 0;
+  color: var(--color-secondary-85)
 }
 </style>

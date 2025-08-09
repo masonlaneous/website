@@ -10,12 +10,14 @@ const flowCache: {
   initialized: false
 }
 let db: Db
+let currentId: number | null = null
 
 export async function initFlowCache() {
   if (flowCache.initialized) return
 
   db = await getDb()
   const thoughts = await db.collection<FlowThought>('thoughts').find().sort({ createdAt: -1 }).toArray()
+  currentId = thoughts.length
   flowCache.thoughts = thoughts
   flowCache.initialized = true
 
@@ -29,8 +31,10 @@ export function getFlowCache(descending = true) {
 }
 
 export async function addThought(content: string) {
+  if (!currentId) return
+
   const newThought: FlowThought = {
-    id: 1,
+    id: ++currentId,
     content,
     createdAt: Date.now(),
     likes: 0
