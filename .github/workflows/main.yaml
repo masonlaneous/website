@@ -56,6 +56,6 @@ jobs:
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "docker stop masonscape || true; \
              docker container rm masonscape || true; \
-             docker run --name masonscape -d -p 3000:3000 -e MONGO_URI="$MONGO_URI" masonscape"
+             docker run --name masonscape -d -p 3000:3000 -e MONGO_URI="${{ secrets.MONGO_URI }}" masonscape"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
