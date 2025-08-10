@@ -30,8 +30,9 @@ export function getFlowCache(descending = true) {
   return descending ? newFlowCache.reverse() : newFlowCache
 }
 
-export async function addThought(content: string) {
-  if (!currentId) return
+export async function addThought(content: string, adminKey: string) {
+  if (!currentId) return console.log('invalid id, cant add post')
+  if (!process.env.FLOW_ADMIN_KEY || adminKey !== process.env.FLOW_ADMIN_KEY) return console.log('missing or invalid admin key')
 
   const newThought: FlowThought = {
     id: ++currentId,

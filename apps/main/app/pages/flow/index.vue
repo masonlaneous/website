@@ -20,13 +20,13 @@ useSeoMeta({
 async function addPost(content: string) {
   return $fetch('/api/flow', {
     method: 'POST',
-    body: { content }
+    body: { content, adminKey: adminKey.value }
   })
 }
 
 const thoughts = ref<FlowThought[]>([])
 const formInput = ref('testing!')
-const adminKey = ref<string | null>('jufus')
+const adminKey = ref<string | null>()
 const likedList = ref<number[]>([])
 
 const initLikedList = () => {
