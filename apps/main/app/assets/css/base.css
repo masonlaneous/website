@@ -32,8 +32,6 @@
   
   --header-height: 4em;
   --button-size: calc(var(--header-height) / 2);
-
-  font-size: 16px;
 }
 
 :root {
@@ -73,4 +71,17 @@ a:visited {
 
 a:hover {
   color: color-mix(in srgb, var(--color-accent) 50%, white 50%)
+}
+
+p, ul {
+  color: var(--color-secondary-85)
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-secondary)
 }

@@ -8,100 +8,106 @@ useHead({
     { property: 'og:url', content: `https://masonscape.com/${useRoute().path}` },
   ]
 })
+
+// definePageMeta({
+//   layout: 'main',
+// })
+
+const dvdVisible = ref(false)
+
+const toggleDvd = () => {
+  dvdVisible.value = !dvdVisible.value
+}
 </script>
 
 <template>
   <div class="main-page">
-    <div class="image-text-group">
-      <img src="/MasonCircle.svg" class="image">
-      <h1>Welcome to the masonscape!</h1>
-      <img src="/MasonCircle.svg" class="image">
+    <div class="welcome">
+      <HomeHeader :masonscape-click-handler="toggleDvd" />
+      <p class="bio">
+        my name is mason! i've been a backend developer since 2018, and i started frontend in 2023.
+        <br><br>
+        i see code as a way to express myself creatively and have fun solving problems. this site is a foundation for me to build on whenever i get an idea for something to make. 
+        <br><br>
+        check out the links at the top of the screen, and enjoy your stay!
+      </p>
     </div>
-    <NuxtLink to="/blog" class="bloglink">Click here to visit the blog!</NuxtLink>
-    
-    <div class="image-text-group">
-      <img src="/Vue.svg" class="image"> 
-      <h2>This is my website, built using <a href="https://vuejs.org/" target="blank">Vue</a></h2>
-      <img src="/Vue.svg" class="image"> 
+    <hr>
+    <div class="tech-stack">
+      <h2 class="the-stack">masonscape runs on...</h2>
+      <p class="more-info">click on one to visit its website!</p>
+      <div class="stack-panels">
+        <HomeTechPanel name="Nuxt" description="plus a few modules" icon-url="main/Nuxt.svg" />
+        <HomeTechPanel name="TypeScript" description="the masonscape is type-safe!" icon-url="main/TypeScript.svg" :flipped="true"/>
+        <HomeTechPanel name="DigitalOcean" description="the masonscape is type-safe!" icon-url="main/DigitalOcean.svg"/>
+        <HomeTechPanel name="Debian" description="the masonscape is type-safe!" icon-url="main/DigitalOcean.svg"/>
+        <HomeTechPanel name="pnpm" description="the masonscape is type-safe!" icon-url="main/DigitalOcean.svg"/>
+        <HomeTechPanel name="nginx" description="the masonscape is type-safe!" icon-url="main/DigitalOcean.svg"/>
+        <HomeTechPanel name="DigitalOcean" description="the masonscape is type-safe!" icon-url="main/DigitalOcean.svg"/>
+      </div>
     </div>
-  
-    <div class="image-text-group">
-      <img src="/Nuxt.svg" class="image">
-      <h2>(or more specifically, <a href="https://nuxt.com/" target="blank">Nuxt</a>)</h2>
-      <img src="/Nuxt.svg" class="image">
-    </div>
-
-    <div class="image-text-group">
-      <img src="/Nuxt.svg" class="image">
-      <h2>(or more specificallyer, <a href="https://content.nuxt.com/" target="blank">Nuxt Content</a>)</h2>
-      <img src="/Nuxt.svg" class="image">
-    </div>
+    <HomeDVD v-if="dvdVisible" />
   </div>
 </template>
 
 <style scoped>
 .main-page {
+  position: relative;
+  z-index: 0;
+
+  width: 100vw;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  margin-bottom: 4em;
+}
+
+.welcome {
+  margin: 4em auto 0 auto;
+  padding: 0 1em;
+}
+
+.bio {
+  text-align: left;
+  font-size: 1.2em;
+  max-width: min(24em, 100vw - 2em);
+  margin: 0 auto;
+}
+
+.tech-stack {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.the-stack {
+  font-size: 1.8em;
+  margin-top: 0;
+  margin-bottom: 0.25em;
   text-align: center;
-  width: 90vw;
-  color: var(--color-secondary);
-
-  font-size: min(5vw, 1em)
 }
 
-.bloglink {
-  font-size: 120%;
-  padding: 1.2em;
-  margin-bottom: 1em;
-  background-color: var(--color-accent);
-  border-radius: 2em;
-  text-decoration: none;
-  color: var(--color-secondary);
-  max-width: 50%;
-  max-height: 50%;
+.more-info {
+  text-align: center;
+  font-style: italic;
+  color: var(--color-secondary-70);
+  margin-top: 0;
+  margin-bottom: 2em;
 }
 
-.bloglink:hover {
-  background-color: color-mix(in srgb, var(--color-accent) 80%, var(--color-primary) 20%);
-  transform: scale(110%);
-}
-
-h1, h2, h3 {
-  align-content: center;
-  margin: 0.5em;
-}
-span {
-  color: var(--color-accent);
-  text-decoration: underline solid var(--color-accent)
-}
-
-.image-text-group {
+.stack-panels {
   display: flex;
   justify-content: center;
-  align-content: center;
-  width: 100%;
-  color: var(--color-secondary);
-  margin: 1em;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 0 auto;
+  width: min(90vw, 50em);
 }
 
-.image {
-  margin-top: auto;
-  margin-bottom: auto;
-  width: 3em;
-  height: 3em;
-  aspect-ratio: 1;
-  visibility: hidden;
-}
-
-.image-text-group:hover .image {
-  visibility: visible;
-}
-
-@media (max-width: 640px) {
-  .image {
-    display: none;
-  }
+hr {
+  width: min(calc(100vw - 4em), 36em);
+  margin: 4em 0 3em 0;
+  border: 1px solid var(--color-primary-90);
 }
 </style>

@@ -18,12 +18,10 @@
 
 <style scoped>
 .footer {
-  position: relative;
   display: flex;
-  /* background-color: var(--color-primary-95); */
+  background-color: color-mix(in srgb, var(--color-primary-90) 50%, transparent 50%);
   width: 100%;
   box-sizing: border-box;
-  height: clamp(var(--header-height), var(--header-height), fit-content);
   z-index: 1000;
   align-items: center;
 

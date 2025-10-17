@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     },
     experimental: {
       websocket: true
-    }
+    },
   },
 
   hooks: {

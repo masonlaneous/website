@@ -33,11 +33,17 @@ onMounted(() => {
       </div>
       <p class="wordmark">masonscape</p>
     </NuxtLink>
-    <!-- <div class="header-links">
+    <div class="header-links">
       <NuxtLink class="header-link" href="/blog">
         Blog
       </NuxtLink>
-    </div> -->
+      <NuxtLink class="header-link" href="/flow">
+        Flow
+      </NuxtLink>
+      <NuxtLink class="header-link" href="/blog">
+        Chat
+      </NuxtLink>
+    </div>
     <!-- <div class="button-list">
       <ThemeSwitcher class="button"/>
     </div> -->
@@ -47,17 +53,18 @@ onMounted(() => {
 <style scoped>
 .header {
   display: flex;
-  position: absolute;
   align-items: center;
   justify-content: center;
-  container-type: size;
-  /* background-color: var(--color-primary-95); */
-  width: 100%;
-  top: 0;
-  height: var(--header-height);
-  z-index: 1000;
 
-  /* border-bottom: 1px var(--color-primary-70) solid */
+  /* only width containment for container queries based on width */
+  container-type: inline-size;
+
+  width: 100%;
+  height: var(--header-height, 64px);   /* explicit height + fallback */
+  flex: 0 0 var(--header-height, 64px); /* don’t let flexbox shrink it */
+  box-sizing: border-box;
+  background-color: color-mix(in srgb, var(--color-primary-90) 50%, transparent 50%);
+  z-index: 1000;
 }
 
 .button-list {
@@ -75,7 +82,7 @@ onMounted(() => {
 
 .header-link {
   color: var(--color-secondary) 70%;
-  padding: 1em;
+  padding: min(2vw, 1em);
   text-decoration: none;
 }
 
@@ -120,20 +127,13 @@ html[is-special-theme="false"] .placeholder-logo {
   background: linear-gradient(#00c0ff, #0048ff)
 }
 
-.picture-wrapper {
-  width: 60cqh;
-  height: 60cqh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.picture-wrapper,
 .picture {
-  width: 60cqh;
-  height: 60cqh;
+  inline-size: calc(var(--header-height) - 1.75em);
+  block-size: calc(var(--header-height) - 1.75em);
+  /* keep it circular */
   clip-path: circle(50%);
 }
-
 
 @media (max-width: 600px) {
   .wordmark {
