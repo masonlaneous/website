@@ -31,6 +31,11 @@ const router = createRouter({
       name: 'dvd',
       component: () => import('../views/DVDView.vue'),
     },
+    {
+      path: '/unicode',
+      name: 'unicode',
+      component: () => import('../views/RandomCharView.vue'),
+    },
   ],
 })
 
