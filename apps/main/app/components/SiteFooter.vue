@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <p class="copyright">© masonscape.com</p>
+    <p class="copyright">© masonlaneous.com</p>
     <div class="footer-links">
       <NuxtLink href="/privacy" class="footer-link">
         <p>Privacy</p>
@@ -11,7 +11,7 @@
     </div>
     <div class="button-list">
       <ThemeSwitcher class="button"/>
-      <LinkButton class="button" icon="grommet-icons:github" href="https://github.com/masonscape/website" target="_blank"/>
+      <LinkButton class="button" icon="grommet-icons:github" href="https://github.com/masonlaneous/website" target="_blank"/>
     </div>
   </footer>
 </template>

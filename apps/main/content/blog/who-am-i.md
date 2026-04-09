@@ -2,7 +2,7 @@
 title: who am i?
 description: get to know the mason behind the scape
 published: 1749322324082
-modified: 1749324624011
+modified: 1775731763991
 ---
 
 hi! i am the guy who made this website. in this post ill talk a little about who i am as a person, and then a bit about who i am as a developer
@@ -143,7 +143,7 @@ side note, but speaking of troubles, around that time is when i was trying to ho
 
 #### the reactening
 
-apparently, after making 1/3rd of a website using html, css, and js, i figured i was ready to move on to a framework. and react was the most popular one, so thats what i went with. this react app was also incredibly basic, and it was online for about 2 years, up until i replaced it with masonscape. it was just the sample create-react-app home page with a couple lines of text changed, although i did also have a tictactoe page (with websocket-based multiplayer) on that website. but thats about it. and then i just let it sit for years because i really was not interested in react
+apparently, after making 1/3rd of a website using html, css, and js, i figured i was ready to move on to a framework. and react was the most popular one, so thats what i went with. this react app was also incredibly basic, and it was online for about 2 years, up until i replaced it with masonlaneous. it was just the sample create-react-app home page with a couple lines of text changed, although i did also have a tictactoe page (with websocket-based multiplayer) on that website. but thats about it. and then i just let it sit for years because i really was not interested in react
 
 i DID still experiment with react over the past couple years privately. random projects that i would leave half-finished and never show anybody. i cant even remember most of them, honestly. i had a react rewrite of the previously mentioned html canvas drawing page about 80% finished, then i gave up on it. i tested out rendering user-controlled shapes in html canvas, planning to maybe turn it into some kind of game, but i also gave up on that. for the past couple years, most of the programming ive done has been abandoned early on
 

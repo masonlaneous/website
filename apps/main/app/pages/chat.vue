@@ -51,8 +51,8 @@ definePageMeta({
 useHead({
   title: 'chat',
   meta: [
-    { property: 'og:title', content: 'masonscape chat' },
-    { property: 'og:url', content: `https://masonscape.com/${useRoute().path}` },
+    { property: 'og:title', content: 'masonlaneous chat' },
+    { property: 'og:url', content: `https://masonlaneous.com/${useRoute().path}` },
     { name: 'theme-color', content: '#0090ff' }
   ]
 })

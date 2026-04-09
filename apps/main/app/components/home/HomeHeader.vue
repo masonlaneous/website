@@ -1,29 +1,40 @@
 <template>
-  <h1 class="title">welcome to the<br><span class="masonscape" :class="activated && 'activated'" @click="handleClick">masonscape</span></h1>
+  <h1>welcome to <br><span class="masonlaneous" :class="activated && 'activated'" @click="handleClick">masonlaneous</span></h1>
+  <h2>the place for mason to share his miscellaneous thoughts & creations</h2>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  masonscapeClickHandler: () => void
+  masonlaneousClickHandler: () => void
 }>()
 
 const activated = ref(false)
 
 const handleClick = () => {
-  props.masonscapeClickHandler()
+  props.masonlaneousClickHandler()
 
   activated.value = !activated.value
 }
 </script>
 
 <style scoped>
-.title {
+h1 {
   font-size: min(12vw, 3.2em);
-  margin-top: 0;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
   text-align: center;
 }
 
-.masonscape {
+h2 {
+  font-size: min(4vw, 1em);
+  text-align: center;
+  margin-bottom: 3em;
+  color: var(--color-secondary-60);
+  font-style: italic;
+  font-weight: normal;
+}
+
+.masonlaneous {
   background: linear-gradient(to left, var(--blue-6), var(--blue-5), var(--blue-4), var(--blue-3), var(--blue-2), var(--blue-1), var(--blue-2), var(--blue-3), var(--blue-4), var(--blue-5), var(--blue-6));
   background-clip: text;
   -webkit-background-clip: text;

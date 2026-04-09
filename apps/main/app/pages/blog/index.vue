@@ -16,10 +16,10 @@ const formatTimestamp = (timestamp: number) => {
 useHead({
   title: 'blog posts',
   meta: [
-    { name: 'description', content: 'the official blog of the masonscape' },
+    { name: 'description', content: 'the masonlaneous blog' },
     { property: 'og:title', content: 'blog' },
-    { property: 'og:description', content: 'the official blog of the masonscape' },
-    { property: 'og:url', content: `https://masonscape.com/${useRoute().path}` },
+    { property: 'og:description', content: 'the masonlaneous blog' },
+    { property: 'og:url', content: `https://masonlaneous.com/${useRoute().path}` },
   ]
 })
 </script>

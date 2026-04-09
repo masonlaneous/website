@@ -10,7 +10,7 @@ useHead({
     { name: 'description', content: post.value.description },
     { property: 'og:title', content: post.value.title },
     { property: 'og:description', content: post.value.description },
-    { property: 'og:url', content: `https://masonscape.com/${useRoute().path}` },
+    { property: 'og:url', content: `https://masonlaneous.com/${useRoute().path}` },
     { name: 'theme-color', content: '#0090ff' }
   ]
 })

@@ -11,7 +11,7 @@
 <script setup>
 useHead({
   meta: [
-    { property: 'og:url', content: `https://masonscape.com/${useRoute().path}` },
+    { property: 'og:url', content: `https://masonlaneous.com/${useRoute().path}` },
     { name: 'theme-color', content: '#0090ff' }
   ]
 })

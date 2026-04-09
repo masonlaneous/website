@@ -1,4 +1,4 @@
-name: Deploy www.masonscape.com
+name: Deploy www.masonlaneous.com
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           
       # Save the built image to a tarball
       - name: Save Docker image
-        run: docker save -o masonscape.tar masonscape
+        run: docker save -o masonlaneous.tar masonlaneous
           
       # Configure SSH connection
       - name: Configure SSH connection
@@ -45,8 +45,8 @@ jobs:
       # Transfer the image to the droplet and load it
       - name: Transfer and load Docker image
         run: |
-          scp -P ${{ secrets.SSH_PORT }} masonscape.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/masonscape.tar
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker load -i /tmp/masonscape.tar && rm /tmp/masonscape.tar"
+          scp -P ${{ secrets.SSH_PORT }} masonlaneous.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/masonlaneous.tar
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker load -i /tmp/masonlaneous.tar && rm /tmp/masonlaneous.tar"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           
@@ -54,8 +54,8 @@ jobs:
       - name: Deploy container
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "docker stop masonscape || true; \
-             docker container rm masonscape || true; \
-             docker run --name masonscape -d -p 3000:3000 -e MONGO_URI='${{ secrets.MONGO_URI }}' -e FLOW_ADMIN_KEY='${{ secrets.FLOW_ADMIN_KEY }}' masonscape"
+            "docker stop masonlaneous || true; \
+             docker container rm masonlaneous || true; \
+             docker run --name masonlaneous -d -p 3000:3000 -e MONGO_URI='${{ secrets.MONGO_URI }}' -e FLOW_ADMIN_KEY='${{ secrets.FLOW_ADMIN_KEY }}' masonlaneous"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock

@@ -8,6 +8,10 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView,
+    }, {
+      path: '/triangle',
+      name: 'triangle',
+      component: () => import('../views/TriangleWorldView.vue'),
     }
   ]
 })

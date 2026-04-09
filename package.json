@@ -1,11 +1,11 @@
 {
-  "name": "masonscape",
+  "name": "masonlaneous",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "scripts": {
-    "build-main": "cd apps/main && docker build --network=host -t masonscape -f Dockerfile ../..",
-    "build-silly": "cd apps/silly && docker build --network=host -t silly-masonscape -f Dockerfile ../.."
+    "build-main": "cd apps/main && docker build --network=host -t masonlaneous -f Dockerfile ../..",
+    "build-silly": "cd apps/silly && docker build --network=host -t silly-masonlaneous -f Dockerfile ../.."
   },
   "private": true,
   "workspaces": [

@@ -1,4 +1,4 @@
-name: Deploy silly.masonscape.com
+name: Deploy silly.masonlaneous.com
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           
       # Save the built image to a tarball
       - name: Save Docker image
-        run: docker save -o silly-masonscape.tar silly-masonscape
+        run: docker save -o silly-masonlaneous.tar silly-masonlaneous
           
       # Configure SSH connection
       - name: Configure SSH connection
@@ -45,8 +45,8 @@ jobs:
       # Transfer the image to the droplet and load it
       - name: Transfer and load Docker image
         run: |
-          scp -P ${{ secrets.SSH_PORT }} silly-masonscape.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/silly-masonscape.tar
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker load -i /tmp/silly-masonscape.tar && rm /tmp/silly-masonscape.tar"
+          scp -P ${{ secrets.SSH_PORT }} silly-masonlaneous.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/silly-masonlaneous.tar
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker load -i /tmp/silly-masonlaneous.tar && rm /tmp/silly-masonlaneous.tar"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           
@@ -54,8 +54,8 @@ jobs:
       - name: Deploy container
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "docker stop silly-masonscape || true; \
-             docker container rm silly-masonscape || true; \
-             docker run --name silly-masonscape -d -p 8080:80 silly-masonscape"
+            "docker stop silly-masonlaneous || true; \
+             docker container rm silly-masonlaneous || true; \
+             docker run --name silly-masonlaneous -d -p 8080:80 silly-masonlaneous"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock

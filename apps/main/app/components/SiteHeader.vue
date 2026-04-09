@@ -31,7 +31,7 @@ onMounted(() => {
           <MasonPicture v-else class="picture" />
         </div>
       </div>
-      <p class="wordmark">masonscape</p>
+      <p class="wordmark">masonlaneous</p>
     </NuxtLink>
     <div class="header-links">
       <NuxtLink class="header-link" href="/blog">
@@ -64,7 +64,12 @@ onMounted(() => {
   flex: 0 0 var(--header-height, 64px); /* don’t let flexbox shrink it */
   box-sizing: border-box;
   background-color: color-mix(in srgb, var(--color-primary-90) 50%, transparent 50%);
+  background-color: var(--color-primary-95);
+  /* backdrop-filter: brightness(10%); */
   z-index: 1000;
+
+  /* stick to the top of the screen */
+  position: fixed;
 }
 
 .button-list {
@@ -105,6 +110,9 @@ onMounted(() => {
   font-size: 1.6em;
   font-weight: 700;
   color: var(--color-secondary);
+  margin: 0;
+  /* attempt to perfectly align the wordmark with the logo */
+  margin-bottom: 0.25em;
 }
 
 .logo {
@@ -118,8 +126,8 @@ onMounted(() => {
 .placeholder-logo {
   background: var(--color-secondary);
   border-radius: 50%;
-  width: 99%;
-  height: 99%;
+  width: 100%;
+  height: 100%;
   position: absolute;
 }
 
