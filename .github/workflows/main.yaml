@@ -30,4 +30,4 @@ jobs:
           
       # Deploy the container using docker compose
       - name: Deploy
-        run: docker compose -f /home/mason/docker/docker-compose.yml up -d
+        run: docker compose -f /home/runner/docker/docker-compose.yml up -d
