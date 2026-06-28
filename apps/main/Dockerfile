@@ -1,50 +1,40 @@
-# Build Stage 1
+# Build Stage
 FROM node:22-alpine AS build
 WORKDIR /repo
 
+# Enable corepack for pnpm
 RUN corepack enable
 
-# Copy workspace + lockfiles
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-
-# Copy apps + packages
-COPY apps ./apps
-COPY packages ./packages
-COPY services ./services
-
-# Install build tools
+# Install build tools early so they're cached
 RUN apk add --no-cache python3 make g++ libc6-compat vips-dev
+
+# Copy only manifests first for dependency caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps/main/package.json ./apps/main/
+COPY packages/ ./packages/
+COPY services/ ./services/
+
+# Install dependencies - this layer is cached unless lockfile/package.json changes
 ENV npm_config_nodedir=/usr/local
+RUN pnpm install --filter ./apps/main... --frozen-lockfile
 
-# Install dependencies for apps/main
-RUN pnpm install --filter ./apps/main...
+# Now copy source code
+COPY apps/main ./apps/main
 
-# Copy the rest of the project
-# COPY . ./
-
+# Build
 ENV GENERATE_SOURCEMAP=false
 ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN cd apps/main && pnpm run build
 
-# Build the project
-WORKDIR /repo/apps/main
-RUN pnpm run build
+# Remove unoptimized blog images
+RUN rm -rf /repo/apps/main/.output/public/blog-images
 
-# Delete unoptimized versions of blog images. These are optimized by NuxtImg via my ContentImage.vue component, so we don't want the original, uncompressed files taking up space on the final image
-RUN rm -rf .output/public/blog-images
-
-
-# Build Stage 2: Minimal image with only nodejs and output
-FROM alpine:3.22
+# Final Stage
+FROM node:22-alpine AS final
 WORKDIR /app
 
-# Install just the Node.js runtime (no npm, no dev tools)
-RUN apk add --no-cache nodejs
-
-# Copy the built output
+# Only copy built output
 COPY --from=build /repo/apps/main/.output/ ./
 
-# Expose port
 EXPOSE 3000
-
-# Run the Nuxt server
 CMD ["node", "/app/server/index.mjs"]
