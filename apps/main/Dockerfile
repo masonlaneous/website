@@ -12,6 +12,10 @@ COPY apps ./apps
 COPY packages ./packages
 COPY services ./services
 
+# Install build tools
+RUN apk add --no-cache python3 make g++ libc6-compat vips-dev
+ENV npm_config_nodedir=/usr/local
+
 # Install dependencies for apps/main
 RUN pnpm install --filter ./apps/main...
 
