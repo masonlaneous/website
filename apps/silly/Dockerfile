@@ -1,33 +1,25 @@
-# Build Stage 1
-FROM node:22-alpine AS build
+# syntax=docker/dockerfile:1
+
+FROM node:24-alpine@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd AS build
 WORKDIR /repo
 
 RUN corepack enable
 
-# Copy workspace + lockfiles
+RUN apk add --no-cache python3 make g++ libc6-compat
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps/silly/package.json ./apps/silly/
+COPY packages/ ./packages/
+COPY services/ ./services/
 
-# Copy apps + packages
-COPY apps ./apps
-COPY packages ./packages
-COPY services ./services
+ENV npm_config_nodedir=/usr/local
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --filter ./apps/silly... --frozen-lockfile
 
-# Install dependencies for apps/silly
-RUN pnpm install --filter ./apps/silly...
-
-# Optimize build step for GitHub
-ENV GENERATE_SOURCEMAP=false
+COPY apps/silly ./apps/silly
 ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN cd apps/silly && pnpm run build
 
-# Build the project
-WORKDIR /repo/apps/silly
-RUN pnpm run build
-
-
-# Build Stage 2: Minimal image with only nodejs and output
 FROM nginx:alpine
-WORKDIR /app
-
-# Copy the built output
 COPY --from=build /repo/apps/silly/dist/ /usr/share/nginx/html
 COPY --from=build /repo/apps/silly/nginx.conf /etc/nginx/conf.d/default.conf

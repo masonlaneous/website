@@ -36,6 +36,11 @@ const router = createRouter({
       name: 'unicode',
       component: () => import('../views/RandomCharView.vue'),
     },
+    {
+      path: '/life',
+      name: 'life',
+      component: () => import('../views/LifeView.vue'),
+    },
   ],
 })
 
