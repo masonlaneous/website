@@ -39,7 +39,7 @@ const toggleDvd = () => {
       <h2 class="section-title">where's the cool stuff?</h2>
       <p class="section-text">
         well, some cool stuff is at the top of the screen!
-        <br><br><br><br><br><br><br>hi (test 2)
+        <br><br><br><br><br><br><br>hi (test 3)
       </p>
     </div>
 
