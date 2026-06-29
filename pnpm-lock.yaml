@@ -115,7 +115,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  apps/test:
+  apps/silly:
     dependencies:
       fuse.js:
         specifier: ^7.1.0
