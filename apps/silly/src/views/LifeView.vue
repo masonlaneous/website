@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="i in Array.from(Array(10).keys())">
+    <div v-for="i in Array.from(Array(12).keys())">
       <p>{{ i }}</p>
     </div>
   </div>
