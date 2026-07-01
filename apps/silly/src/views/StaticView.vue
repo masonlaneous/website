@@ -5,9 +5,18 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const ctxRef = computed(() => canvasRef.value?.getContext('2d'))
 const canvasWidth = ref(0)
 const canvasHeight = ref(0)
-const canvasScaleRef = ref(1)
 
-const rainbowMode = ref(false)
+const resolutionScale = ref(1)
+const zoomScale = ref(1)
+let canvasTransformX = 0
+let canvasTransformY = 0
+
+let bufferCanvas: HTMLCanvasElement | null = null
+let bufferCtx: CanvasRenderingContext2D | null = null
+
+let isPanning = false
+let previousX = 0
+let previousY = 0
 
 const mouseX = ref(0)
 const mouseY = ref(0)
@@ -28,12 +37,20 @@ const imageDataRef = ref<ImageData | null>(null)
 
 const minCanvasScale = 0.05
 const maxCanvasScale = 1.5
+const minZoom = 0.1
+const maxZoom = 50
 
 let scheduledFrame = 0
 
-const clampCanvasScale = () => {
-  canvasScaleRef.value = Math.round(
-    Math.min(maxCanvasScale, Math.max(minCanvasScale, canvasScaleRef.value)) * 10000,
+const clampResolutionScale = () => {
+  resolutionScale.value = Math.round(
+    Math.min(maxCanvasScale, Math.max(minCanvasScale, resolutionScale.value)) * 10000,
+  ) / 10000
+}
+
+const clampZoomScale = () => {
+  zoomScale.value = Math.round(
+    Math.min(maxZoom, Math.max(minZoom, zoomScale.value)) * 10000,
   ) / 10000
 }
 
@@ -54,16 +71,36 @@ const compileFormula = (formula: string) => {
 const clampByte = (value: number) => (value < 0 ? 0 : value > 255 ? 255 : value)
 
 const ensureImageData = (width: number, height: number) => {
-  if (!ctxRef.value) return null
+  if (!bufferCtx) return null
   const imageData = imageDataRef.value
   if (!imageData || imageData.width !== width || imageData.height !== height) {
-    imageDataRef.value = ctxRef.value.createImageData(width, height)
+    imageDataRef.value = bufferCtx.createImageData(width, height)
   }
   return imageDataRef.value
 }
 
+const drawBufferToCanvas = () => {
+  const canvas = canvasRef.value
+  const ctx = ctxRef.value
+  if (!canvas || !ctx || !bufferCanvas) return
+
+  ctx.imageSmoothingEnabled = false
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.setTransform(
+    zoomScale.value,
+    0,
+    0,
+    zoomScale.value,
+    canvasTransformX,
+    canvasTransformY,
+  )
+  ctx.drawImage(bufferCanvas, 0, 0)
+}
+
 const fillPageWithStatic = () => {
-  if (!canvasRef.value || !ctxRef.value) return
+  if (!bufferCanvas || !bufferCtx) return
 
   const width = canvasWidth.value
   const height = canvasHeight.value
@@ -76,8 +113,8 @@ const fillPageWithStatic = () => {
   const redFn = compiledRFormula.value
   const greenFn = compiledGFormula.value
   const blueFn = compiledBFormula.value
-  const mx = mouseX.value || 0
-  const my = mouseY.value || 0
+  const mx = mouseX.value
+  const my = mouseY.value
 
   let i = 0
   for (let y = 0; y < height; y++) {
@@ -86,30 +123,35 @@ const fillPageWithStatic = () => {
       const rawGreen = greenFn(x, y, mx, my)
       const rawBlue = blueFn(x, y, mx, my)
 
-      if (x === mx && y === my) {
-        data[i++] = 255
-        data[i++] = 255
-        data[i++] = 255
-        data[i++] = 255
-      } else {
-        data[i++] = clampByte(rawRed)
+      // if (x === mx && y === my) {
+      //   data[i++] = 255
+      //   data[i++] = 255
+      //   data[i++] = 255
+      //   data[i++] = 255
+      // } else {
+      //   data[i++] = clampByte(rawRed)
+      //   data[i++] = clampByte(rawGreen)
+      //   data[i++] = clampByte(rawBlue)
+      //   data[i++] = 255
+      // }
+
+      data[i++] = clampByte(rawRed)
         data[i++] = clampByte(rawGreen)
         data[i++] = clampByte(rawBlue)
         data[i++] = 255
-      }
     }
   }
 
-  ctxRef.value.putImageData(imageData, 0, 0)
+  bufferCtx.putImageData(imageData, 0, 0)
 }
 
 const scheduleRender = () => {
   if (scheduledFrame !== 0) return
   scheduledFrame = requestAnimationFrame(() => {
     scheduledFrame = 0
-    // if (!showMenu.value) {
-      fillPageWithStatic()
-    // }
+
+    fillPageWithStatic()
+    drawBufferToCanvas()
   })
 }
 
@@ -117,15 +159,27 @@ const initCanvasSize = () => {
   const canvas = canvasRef.value
   if (!canvas) return
 
-  clampCanvasScale()
-  const width = Math.floor(window.innerWidth * canvasScaleRef.value)
-  const height = Math.floor(window.innerHeight * canvasScaleRef.value)
+  if (!bufferCanvas) {
+    bufferCanvas = document.createElement('canvas')
+    bufferCtx = bufferCanvas.getContext('2d')
+  }
 
-  canvas.width = width
-  canvas.height = height
-  canvasWidth.value = width
-  canvasHeight.value = height
+  clampResolutionScale()
+
+  // Visible canvas always matches viewport exactly
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+
+  // Buffer shrinks with resolutionScale
+  const bufferWidth = Math.floor(window.innerWidth * resolutionScale.value)
+  const bufferHeight = Math.floor(window.innerHeight * resolutionScale.value)
+  bufferCanvas.width = bufferWidth
+  bufferCanvas.height = bufferHeight
+  canvasWidth.value = bufferWidth
+  canvasHeight.value = bufferHeight
+
   imageDataRef.value = null
+
   scheduleRender()
 }
 
@@ -141,10 +195,7 @@ watch([canvasWidth, canvasHeight], () => {
 })
 
 const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'r') {
-    rainbowMode.value = !rainbowMode.value
-    fillPageWithStatic()
-  } else if (e.key === 'Tab') {
+  if (e.key === 'Tab') {
     e.preventDefault()
     showMenu.value = !showMenu.value
     if (showMenu.value) {
@@ -153,6 +204,30 @@ const handleKeydown = (e: KeyboardEvent) => {
       menuRef.value?.close()
       scheduleRender()
     }
+  } else if (e.key === '-') {
+    let prevRes = resolutionScale.value
+    resolutionScale.value -= 0.05
+    clampResolutionScale()
+    zoomScale.value = zoomScale.value * (prevRes / resolutionScale.value)
+    clampZoomScale()
+    initCanvasSize()
+  } else if (e.key === '=') {
+    let prevRes = resolutionScale.value
+    resolutionScale.value += 0.05
+    clampResolutionScale()
+    zoomScale.value = zoomScale.value * (prevRes / resolutionScale.value)
+    clampZoomScale()
+    initCanvasSize()
+  } else if (e.key === '0') {
+    resolutionScale.value = 1
+    zoomScale.value = 1
+    canvasTransformX = 0
+    canvasTransformY = 0
+    clampResolutionScale()
+    initCanvasSize()
+  } else if (e.key === 'ArrowUp'){
+    mouseY.value += 1
+    scheduleRender()
   }
 }
 
@@ -160,14 +235,34 @@ const handleMouseMove = (e: MouseEvent) => {
   if (showMenu.value || !canvasRef.value) return
   const canvas = canvasRef.value
   const rect = canvas.getBoundingClientRect()
-  const scale = canvasScaleRef.value
+  const scale = resolutionScale.value
+
+  if (isPanning) {
+    const displayScaleX = canvas.width / rect.width
+    const displayScaleY = canvas.height / rect.height
+    canvasTransformX += (e.clientX - previousX) * displayScaleX
+    canvasTransformY += (e.clientY - previousY) * displayScaleY
+    previousX = e.clientX
+    previousY = e.clientY
+    scheduleRender()
+    return
+  }
 
   const cssX = e.clientX - rect.left
   const cssY = e.clientY - rect.top
 
-  const newX = Math.floor(cssX * scale)
-  const newY = Math.floor(cssY * scale)
+  // Undo the canvas display scaling (rect vs canvas.width/height)
+  const displayScaleX = canvas.width / rect.width
+  const displayScaleY = canvas.height / rect.height
+  const canvasPixelX = cssX * displayScaleX
+  const canvasPixelY = cssY * displayScaleY
 
+  // Undo the pan/zoom transform to get buffer-space coordinates
+  const bufferX = (canvasPixelX - canvasTransformX) / zoomScale.value
+  const bufferY = (canvasPixelY - canvasTransformY) / zoomScale.value
+
+  const newX = Math.floor(bufferX)
+  const newY = Math.floor(bufferY)
   if (newX === mouseX.value && newY === mouseY.value) return
 
   mouseX.value = newX
@@ -178,18 +273,43 @@ const handleMouseMove = (e: MouseEvent) => {
 
 const handleWheel = (e: WheelEvent) => {
   e.preventDefault()
+  if (showMenu.value || !bufferCanvas) return
+
+  const previousZoom = zoomScale.value
+
+  let newZoom = previousZoom
   if (e.deltaY < 0) {
-    canvasScaleRef.value = Math.max(minCanvasScale, canvasScaleRef.value - 0.05)
+    newZoom = Math.min(maxZoom, zoomScale.value * 1.05)
   } else if (e.deltaY > 0) {
-    canvasScaleRef.value = Math.min(maxCanvasScale, canvasScaleRef.value + 0.05)
+    newZoom = Math.max(minZoom, zoomScale.value * 0.95)
   }
-  clampCanvasScale()
-  initCanvasSize()
+
+  const newX = e.clientX - (e.clientX - canvasTransformX) * (newZoom / previousZoom)
+  const newY = e.clientY - (e.clientY - canvasTransformY) * (newZoom / previousZoom)
+
+  canvasTransformX = newX
+  canvasTransformY = newY
+  zoomScale.value = newZoom
+
+  scheduleRender()
+}
+
+const handleMouseDown = (e: MouseEvent) => {
+  if (showMenu.value) return // dont pan if the user is looking at the menu
+  isPanning = true
+  previousX = e.clientX
+  previousY = e.clientY
+}
+
+const handleMouseUp = (e: MouseEvent) => {
+  isPanning = false
 }
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
   document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mousedown', handleMouseDown)
+  document.addEventListener('mouseup', handleMouseUp)
   window.addEventListener('resize', initCanvasSize)
   window.addEventListener('wheel', handleWheel, { passive: false })
 
@@ -200,6 +320,8 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
   document.removeEventListener('mousemove', handleMouseMove)
+  document.removeEventListener('mousedown', handleMouseDown)
+  document.removeEventListener('mouseup', handleMouseUp)
   window.removeEventListener('resize', initCanvasSize)
   window.removeEventListener('wheel', handleWheel)
 
@@ -228,7 +350,8 @@ onUnmounted(() => {
     <div class="info">
       <h1>{{ mouseX }}</h1>
       <h1>{{ mouseY }}</h1>
-      <h1>{{ canvasScaleRef }}</h1>
+      <!-- <h1>{{ resolutionScale }}</h1>
+      <h1>{{ zoomScale }}</h1> -->
     </div>
   </main>
 </template>
@@ -265,7 +388,7 @@ onUnmounted(() => {
 .canvas {
   background-color: black;
 
-  image-rendering: optimizeSpeed;
+  image-rendering: pixelated;
 
   width: 100%;
   height: 100%;
