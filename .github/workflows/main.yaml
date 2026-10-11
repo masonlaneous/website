@@ -1,13 +1,11 @@
-name: Deploy www.masonlaneous.com
+name: Deploy masonlaneous.com
 
 on:
   push:
     paths:
-      # only re-build if the "main" app actually changed
       - apps/main/**
-      # or if its workflow (this file) changed
+      - apps/silly/**
       - .github/workflows/main.yaml
-      # or package.json changes
       - package.json
 
 jobs:
@@ -15,11 +13,12 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
-                          
-      # Build Docker image locally
-      - name: Build Docker image
+
+      - name: Build Main App Image
         run: cd apps/main && docker build --network=host -t masonlaneous -f Dockerfile ../..
-          
-      # Deploy the container using docker compose
+
+      - name: Build Silly App Image
+        run: cd apps/silly && docker build --network=host -t silly-masonlaneous -f Dockerfile ../..
+
       - name: Deploy
-        run: docker compose -f /opt/personalsite/docker-compose.yml up -d
+        run: sudo docker compose -f /opt/personalsite/docker-compose.yml up -d
