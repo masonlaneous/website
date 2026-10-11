@@ -18,7 +18,7 @@ jobs:
                           
       # Build Docker image locally
       - name: Build Docker image
-        run: pnpm run build-main
+        run: cd apps/main && docker build --network=host -t masonlaneous -f Dockerfile ../..
           
       # Deploy the container using docker compose
       - name: Deploy
